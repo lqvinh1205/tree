@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <TreeItem :data="treeData" :level="1"/>
+    <TreeItem v-for="item in treeData" :key="item.id" :data="item" :level="1" />
   </div>
 </template>
 
@@ -13,38 +13,47 @@ export default {
   data() {
     return {
       currentItem: null,
-      treeData: {
-        name: "My Tree",
-        id: "lv1001",
-        children: [
-          { name: "hello", id: "lv2001" },
-          { name: "wat", id: "lv2002" },
-          {
-            name: "child folder",
-            id: "lv2003",
-            children: [
-              {
-                name: "child folder",
-                id: "lv3001",
-                children: [
-                  { name: "hello", id: "lv4001" },
-                  { name: "wat", id: "lv4002" },
-                ],
-              },
-              { name: "hello", id: "lv3002" },
-              { name: "wat", id: "lv3003" },
-              {
-                name: "child folder",
-                id: "lv3004",
-                children: [
-                  { name: "hello", id: "lv4003" },
-                  { name: "wat", id: "lv4004" },
-                ],
-              },
-            ],
-          },
-        ],
-      },
+      treeData: [
+        {
+          name: "My Tree",
+          id: "lv1001",
+          children: [
+            { name: "hello", id: "lv2001" },
+            { name: "wat", id: "lv2002" },
+            {
+              name: "child folder",
+              id: "lv2003",
+              children: [
+                {
+                  name: "child folder",
+                  id: "lv3001",
+                  children: [
+                    { name: "hello", id: "lv4001" },
+                    { name: "wat", id: "lv4002" },
+                  ],
+                },
+                { name: "hello", id: "lv3002" },
+                { name: "wat", id: "lv3003" },
+                {
+                  name: "child folder",
+                  id: "lv3004",
+                  children: [
+                    {
+                      name: "hello",
+                      id: "lv4003",
+                      children: [
+                        { name: "hello", id: "lv5001" },
+                        { name: "wat", id: "lv5002" },
+                      ],
+                    },
+                    { name: "wat", id: "lv4004" },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
   },
   methods: {

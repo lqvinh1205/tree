@@ -1,15 +1,17 @@
 <template>
   <li>
-    <div @click="toggle" class="name">
+    <div @click="handleClick" class="name">
       <div class="level">{{ level }}</div>
       {{ data.name }}
     </div>
-    <ul v-show="isOpen">
+    <ul v-if="isOpen">
       <component-a
-        v-for="(item, index) in data.children"
-        :key="index"
+        v-for="item in data.children"
+        :key="item.id"
         :data="item"
         :level="level + 1"
+        @setFolder="setFolder"
+        :important="folderSelect === item.id ? true : null"
       />
     </ul>
   </li>
@@ -21,12 +23,22 @@ export default {
   components: {
     "component-a": this,
   },
-  props: ["data", "level"],
+  props: ["data", "level", "important"],
 
   data() {
     return {
       isOpen: false,
+      folderSelect: null,
     };
+  },
+  watch: {
+    selectedID() {
+      if(this.data.id === this.selectedID) {
+        this.$emit("setFolder", this.data.id);
+      } else {
+        this.$emit("setFolder", null);
+      }
+    },
   },
   computed: {
     isFolder: function () {
@@ -41,18 +53,23 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.selectedID == this.data.id) console.log(true);
+      this.isOpen = this.important
   },
-  methods: {  
+  methods: {
     ...mapGetters(["getSelectedID"]),
     ...mapMutations(["SET_SELECTED_ID"]),
-    toggle: function () {
-      if (this.isFolder) {
+    handleClick: function () {
         this.isOpen = !this.isOpen;
-        if (this.isOpen) this.SET_SELECTED_ID(this.data.id);
-      } else {
-        this.SET_SELECTED_ID(this.data.id);
-      }
+        if(this.isOpen) {
+          this.$emit("setFolder", this.data.id)
+          this.SET_SELECTED_ID(this.data.id)
+        } else {
+          this.$emit("setFolder", null)
+          this.SET_SELECTED_ID(null)
+        }
+    },
+    setFolder(id) {
+      this.folderSelect = id;
     },
     makeFolder: function () {
       if (!this.isFolder) {
@@ -104,6 +121,9 @@ ul li {
   align-items: center;
   border-radius: 4px;
   font-size: 12px;
+}
+.active{ 
+  background: #acacac;
 }
 </style>
 >
