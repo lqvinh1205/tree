@@ -3,17 +3,19 @@
     <div
       @click="handleClick"
       class="name"
-      :class="{ active: selectedID == this.data.id }"
-    >
+      :class="{ active: selectedID == this.data.id}"
+    > 
+      <div v-if="level != 1" class="is-folder"></div>
       <div class="level">{{ level }}</div>
       {{ data.name }}
     </div>
-    <ul v-if="isOpen">
+    <ul v-show="isOpen | flag" :class="{folder: isFolder}">
       <component-a
         v-for="item in data.children"
         :key="item.id"
         :data="item"
         :level="level + 1"
+        :flag="flag"
         @setFolder="setFolder"
         :important="folderSelect == item.id ? true : null"
       />
@@ -33,6 +35,7 @@ export default {
     return {
       isOpen: false,
       folderSelect: null,
+      flag: null
     };
   },
   watch: {
@@ -47,7 +50,7 @@ export default {
       return this.data.children && this.data.children.length;
     },
     lineColor() {
-      return this.level <= 1 ? "none" : "red";
+      return this.level <= 1 ? "none" : "#e1e1e1";
     },
     selectedID() {
       return this.getSelectedID();
@@ -100,7 +103,7 @@ ul li {
 
   line-height: 1.5em;
   position: relative;
-  border-left: 1px solid #acacac;
+  border-left: 1px solid #e1e1e1;
 }
 .name {
   display: flex;
@@ -112,18 +115,16 @@ ul li {
 .name::before {
   position: absolute;
   content: "";
-  clip-path: polygon(100% 0, 0% 100%, 100% 100%);
-  left: -15px;
-  width: 7px;
-  height: 7px;
-  background: v-bind(lineColor);
-  background: rgb(0, 26, 36);
+  left: -10px;
+  width: 8px;
+  height: 0px;
+  border: .1px solid v-bind(lineColor);
 }
 .level {
   height: 17px !important;
   width: 17px !important;
   /* padding: 20px; */
-  background: rgb(41, 142, 209);
+  background: rgb(16, 52, 76);
   color: #fff;
   display: flex;
   justify-content: center;
@@ -132,9 +133,18 @@ ul li {
   font-size: 12px;
 }
 .active {
-  color: red;
+  text-decoration: underline;
 }
-.item {
+.folder {
+  /* padding-bottom: 10px; */
+}
+.is-folder {
+  border-left: 8px solid transparent;
+  border-bottom: 8px solid rgb(131, 131, 131);
+  display: flex;
+  align-items: center;
+  z-index: 99;position:absolute;
+  left: -15px;
 }
 </style>
 >

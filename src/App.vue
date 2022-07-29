@@ -99,7 +99,8 @@ li {
 }
 .icon_down {
   width: 10px;
-  height: 10px;
-  background: #000;
+  height: 8px;
+  clip-path: polygon(0 24%, 0 45%, 51% 100%, 100% 44%, 100% 25%, 51% 79%);
+  background: rgb(74, 74, 74);
 }
 </style>
