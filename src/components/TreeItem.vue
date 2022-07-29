@@ -1,6 +1,10 @@
 <template>
-  <li>
-    <div @click="handleClick" class="name">
+  <li class="item">
+    <div
+      @click="handleClick"
+      class="name"
+      :class="{ active: selectedID == this.data.id }"
+    >
       <div class="level">{{ level }}</div>
       {{ data.name }}
     </div>
@@ -10,7 +14,6 @@
         :key="item.id"
         :data="item"
         :level="level + 1"
-        @setFlag="setFlag"
         @setFolder="setFolder"
         :important="folderSelect == item.id ? true : null"
       />
@@ -34,12 +37,8 @@ export default {
   },
   watch: {
     selectedID() {
-      if(this.data.id === this.selectedID) {
+      if (this.data.id === this.selectedID) {
         this.$emit("setFolder", this.data.id);
-        this.$emit("setFlag", true);
-        console.log(321);
-      } else {
-        this.$emit("setFlag", null)
       }
     },
   },
@@ -56,26 +55,26 @@ export default {
   },
   created() {},
   mounted() {
-    if(this.important) {
-      this.isOpen = this.important
-    }
-    else this.isOpen = false
+    if (this.important) {
+      this.isOpen = this.important;
+    } else this.isOpen = false;
   },
   methods: {
     ...mapGetters(["getSelectedID"]),
     ...mapMutations(["SET_SELECTED_ID"]),
     handleClick: function () {
-        this.isOpen = !this.isOpen;
-        if(this.isOpen) {
-          this.SET_SELECTED_ID(this.data.id)
-        } else {
-          this.$emit("setFolder", null)
-          this.SET_SELECTED_ID(null)
-        }
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        this.$emit("setFolder", this.data.id);
+        this.SET_SELECTED_ID(this.data.id);
+      } else {
+        // this.$emit("setFolder", null)
+        this.SET_SELECTED_ID(null);
+      }
     },
-    setFlag(value) {
-      this.flag = value;
-    },
+    // setFlag(value) {
+    //   this.flag = value;
+    // },
     setFolder(id) {
       this.folderSelect = id;
     },
@@ -113,10 +112,12 @@ ul li {
 .name::before {
   position: absolute;
   content: "";
-  left: -10px;
+  clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+  left: -15px;
   width: 7px;
-  height: 1px;
+  height: 7px;
   background: v-bind(lineColor);
+  background: rgb(0, 26, 36);
 }
 .level {
   height: 17px !important;
@@ -129,6 +130,11 @@ ul li {
   align-items: center;
   border-radius: 4px;
   font-size: 12px;
+}
+.active {
+  color: red;
+}
+.item {
 }
 </style>
 >

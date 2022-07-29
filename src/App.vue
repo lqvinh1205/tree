@@ -1,6 +1,15 @@
 <template>
   <div id="app">
-    <TreeItem v-for="item in treeData" :key="item.id" :data="item" :level="1" />
+    <div class="container">
+      <div class="select">
+        <div class="content_select">
+          <span>choose</span>
+        </div>
+        <div class="icon_down">
+        </div>
+      </div>
+      <TreeItem v-for="item in treeData" :key="item.id" :data="item" :level="1" />
+    </div>
   </div>
 </template>
 
@@ -74,5 +83,23 @@ export default {
 <style scoped>
 li {
   list-style: none;
+}
+.container {
+  width: 300px;
+  border: 1px solid #e4e4e4;
+  padding: 10px;
+  border-radius: 4px;
+}
+.select {
+  width: 100%;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center
+}
+.icon_down {
+  width: 10px;
+  height: 10px;
+  background: #000;
 }
 </style>
