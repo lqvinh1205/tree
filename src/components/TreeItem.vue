@@ -3,21 +3,23 @@
     <div
       @click="handleClick"
       class="name"
-      :class="{ active: selectedID == this.data.id}"
-    > 
-      <div v-if="level != 1" class="is-folder"></div>
+      :class="{ active: selectedID == this.data.id }"
+    >
+      <div v-show="level != 1" class="is-folder"></div>
       <div class="level">{{ level }}</div>
       {{ data.name }}
     </div>
-    <ul v-show="isOpen | flag" :class="{folder: isFolder}">
+    <ul
+      v-show="flag | (isOpen && important == null)"
+      :class="{ folder: isFolder }"
+    >
       <component-a
         v-for="item in data.children"
         :key="item.id"
         :data="item"
         :level="level + 1"
-        :flag="flag"
         @setFolder="setFolder"
-        :important="folderSelect == item.id ? true : null"
+        :important="folderSelect === item.id ? true : flag"
       />
     </ul>
   </li>
@@ -35,14 +37,24 @@ export default {
     return {
       isOpen: false,
       folderSelect: null,
-      flag: null
+      flag: null,
     };
   },
   watch: {
     selectedID() {
       if (this.data.id === this.selectedID) {
         this.$emit("setFolder", this.data.id);
+      } else {
+        this.$emit("setFolder", 1);
       }
+    },
+    folderSelect() {
+      if (this.folderSelect != 1) {
+        this.$emit("setFolder", this.data.id);
+      }
+    },
+    important() {
+      this.flag = this.important;
     },
   },
   computed: {
@@ -56,37 +68,36 @@ export default {
       return this.getSelectedID();
     },
   },
-  created() {},
   mounted() {
-    if (this.important) {
-      this.isOpen = this.important;
-    } else this.isOpen = false;
+    // if (this.important) {
+    //   this.isOpen = this.important;
+    // } else this.isOpen = false;
   },
   methods: {
     ...mapGetters(["getSelectedID"]),
     ...mapMutations(["SET_SELECTED_ID"]),
     handleClick: function () {
       this.isOpen = !this.isOpen;
+      this.$emit("setFolder", this.data.id);
       if (this.isOpen) {
-        this.$emit("setFolder", this.data.id);
+        this.flag = this.important;
+      }
+      if (!this.isFolder) {
         this.SET_SELECTED_ID(this.data.id);
-      } else {
-        // this.$emit("setFolder", null)
-        this.SET_SELECTED_ID(null);
+      }
+      if (this.isFolder && !this.isOpen) {
+        this.flag = false;
       }
     },
-    // setFlag(value) {
-    //   this.flag = value;
-    // },
     setFolder(id) {
       this.folderSelect = id;
     },
-    makeFolder: function () {
-      if (!this.isFolder) {
-        this.$emit("make-folder", this.item);
-        this.isOpen = true;
-      }
-    },
+    // makeFolder: function () {
+    //   if (!this.isFolder) {
+    //     this.$emit("make-folder", this.item);
+    //     this.isOpen = true;
+    //   }
+    // },
   },
 };
 </script>
@@ -118,7 +129,7 @@ ul li {
   left: -10px;
   width: 8px;
   height: 0px;
-  border: .1px solid v-bind(lineColor);
+  border: 0.1px solid v-bind(lineColor);
 }
 .level {
   height: 17px !important;
@@ -134,6 +145,7 @@ ul li {
 }
 .active {
   text-decoration: underline;
+  color: red;
 }
 .folder {
   /* padding-bottom: 10px; */
@@ -143,7 +155,8 @@ ul li {
   border-bottom: 8px solid rgb(131, 131, 131);
   display: flex;
   align-items: center;
-  z-index: 99;position:absolute;
+  z-index: 99;
+  position: absolute;
   left: -15px;
 }
 </style>

@@ -9,11 +9,14 @@ export default new Vuex.Store({
   },
   getters: {
     getSelectedID(state) {
-      return state.selectedID
-    }
+      return state.selectedID;
+    },
   },
   mutations: {
     SET_SELECTED_ID(state, payload) {
+      if (this.selectedID === payload) {
+        payload = null;
+      }
       return (state.selectedID = payload);
     },
   },
