@@ -1,19 +1,19 @@
 <template>
-  <li class="item">
+  <li :class="{ tree: !levelDefault  }">
     <div
       @click="handleClick"
-      class="name"
-      :class="{ active: selectedID == this.data.id }"
+      class="tree__name"
+      :class="{ 'tree--active': selectedID == this.data.id }"
     >
-      <div v-show="level != 1" class="is-folder"></div>
-      <div class="level">{{ level }}</div>
+      <div
+        class="tree__name__is-folder"
+        v-if="!isFolder | !levelDefault"
+      ></div>
+      <div class="tree__name__level">{{ level }}</div>
       {{ data.name }}
     </div>
-    <ul
-      v-show="flag | (isOpen && important == null)"
-      :class="{ folder: isFolder }"
-    >
-      <component-a
+    <ul v-show="isOpen" class="tree__ul">
+      <tree-node
         v-for="item in data.children"
         :key="item.id"
         :data="item"
@@ -26,9 +26,9 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: "component-a",
+  name: "tree-node",
   components: {
-    "component-a": this,
+    "tree-node": this,
   },
   props: ["data", "level", "important"],
 
@@ -36,7 +36,6 @@ export default {
     return {
       isOpen: false,
       folderSelect: null,
-      flag: null,
     };
   },
   watch: {
@@ -44,19 +43,20 @@ export default {
       if (this.data.id === this.selectedID) {
         this.$emit("setFolder", this.data.id);
       } else {
-        this.$emit("setFolder", 1);
+        this.$emit("setFolder", null);
       }
     },
     folderSelect() {
-      if (this.folderSelect != 1) {
+      if (this.folderSelect != null) {
         this.$emit("setFolder", this.data.id);
       }
     },
-    important() {
-      this.flag = this.important;
-    },
   },
   computed: {
+    levelDefault() {
+      // xac level 1 de disable class css
+      return this.level === 1
+    },
     isFolder: function () {
       return this.data.children && this.data.children.length;
     },
@@ -67,96 +67,76 @@ export default {
       return this.getSelectedID();
     },
   },
-  mounted() {
-    // if (this.important) {
-    //   this.isOpen = this.important;
-    // } else this.isOpen = false;
-  },
+  mounted() {},
   methods: {
     ...mapGetters(["getSelectedID"]),
     ...mapMutations(["SET_SELECTED_ID"]),
     handleClick: function () {
       this.isOpen = !this.isOpen;
       this.$emit("setFolder", this.data.id);
-      if (this.isOpen) {
-        this.flag = this.important;
-      }
       if (!this.isFolder) {
         this.SET_SELECTED_ID(this.data.id);
-      }
-      if (this.isFolder && !this.isOpen) {
-        this.flag = false;
       }
     },
     setFolder(id) {
       this.folderSelect = id;
     },
-    // makeFolder: function () {
-    //   if (!this.isFolder) {
-    //     this.$emit("make-folder", this.item);
-    //     this.isOpen = true;
-    //   }
-    // },
   },
 };
 </script>
-<style scoped>
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  padding-left: 8px;
-}
-ul li {
-  padding: 0;
+<style lang="scss" scoped>
+.tree {
+  padding: 2px 0;
   padding-left: 10px;
-
   line-height: 1.5em;
   position: relative;
   border-left: 1px solid #e1e1e1;
-}
-.name {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 5px;
-  position: relative;
-}
-.name::before {
-  position: absolute;
-  content: "";
-  left: -10px;
-  width: 8px;
-  height: 0px;
-  border: 0.1px solid v-bind(lineColor);
-}
-.level {
-  height: 17px !important;
-  width: 17px !important;
-  /* padding: 20px; */
-  background: #4a6680;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  font-size: 12px;
-}
-.active {
-  /* text-decoration: underline; */
-  color: #4a6680;
-}
-.folder {
-  /* padding-bottom: 10px; */
-}
-.is-folder {
-  border-left: 8px solid transparent;
-  border-bottom: 8px solid rgb(131, 131, 131);
-  display: flex;
-  align-items: center;
-  z-index: 99;
-  position: absolute;
-  left: -15px;
+  &__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    &:before {
+      position: absolute;
+      content: "";
+      left: -10px;
+      width: 8px;
+      height: 0px;
+      border: 0.1px solid v-bind(lineColor);
+    }
+    &:hover {
+      cursor: pointer;
+    }
+    &__is-folder {
+      border-left: 8px solid transparent;
+      border-bottom: 8px solid rgb(131, 131, 131);
+      display: flex;
+      align-items: center;
+      z-index: 99;
+      position: absolute;
+      left: -15px;
+    }
+    &__level {
+      height: 17px !important;
+      width: 17px !important;
+      background: #4a6680;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  }
+  &__ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    padding-left: 8px;
+  }
+  .tree--active {
+    color: #4a6680;
+  }
 }
 </style>
->
