@@ -19,7 +19,6 @@
         :data="item"
         :level="level + 1"
         @setFolder="setFolder"
-        :important="folderSelect === item.id ? true : flag"
       />
     </ul>
   </li>
@@ -135,7 +134,7 @@ ul li {
   height: 17px !important;
   width: 17px !important;
   /* padding: 20px; */
-  background: rgb(16, 52, 76);
+  background: #4a6680;
   color: #fff;
   display: flex;
   justify-content: center;
@@ -144,8 +143,8 @@ ul li {
   font-size: 12px;
 }
 .active {
-  text-decoration: underline;
-  color: red;
+  /* text-decoration: underline; */
+  color: #4a6680;
 }
 .folder {
   /* padding-bottom: 10px; */
