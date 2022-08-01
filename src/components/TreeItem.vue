@@ -13,7 +13,7 @@
       {{ data.name }}
     </div>
     <ul v-show="isOpen" class="tree__ul">
-      <tree-node
+      <tree-item
         v-for="item in data.children"
         :key="item.id"
         :data="item"
@@ -26,9 +26,9 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: "tree-node",
+  name: "tree-item",
   components: {
-    "tree-node": this,
+    "tree-item": this,
   },
   props: ["data", "level", "important"],
 
