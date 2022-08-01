@@ -2,13 +2,19 @@
   <div id="app">
     <div class="container">
       <div class="select">
-        <div class="content_select">
-          <span>choose</span>
+        <div class="select__content">
+          <span>ポジションコ</span>
         </div>
-        <div class="icon_down">
-        </div>
+        <div class="select__icon_down" @click="toggleTreeView()"></div>
       </div>
-      <TreeItem v-for="item in treeData" :key="item.id" :data="item" :level="1" />
+      <div class="tree" v-show="showTreeView">
+        <TreeItem
+          v-for="item in treeData"
+          :key="item.id"
+          :data="item"
+          :level="1"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -21,7 +27,7 @@ export default {
   },
   data() {
     return {
-      currentItem: null,
+      showTreeView: false,
       treeData: [
         {
           name: "My Tree",
@@ -66,41 +72,49 @@ export default {
     };
   },
   methods: {
-    setSelectedID(id) {
-      this.selectedID = id;
-    },
-    onSelect: function (uuid) {
-      if (this.currentItem === uuid) {
-        this.currentItem = null;
-      } else {
-        this.currentItem = uuid;
-      }
-      console.log(this.currentItem);
+    toggleTreeView() {
+      this.showTreeView = !this.showTreeView;
     },
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 li {
   list-style: none;
 }
 .container {
-  width: 300px;
+  width: 230px;
   border: 1px solid #e4e4e4;
   padding: 10px;
   border-radius: 4px;
-}
-.select {
-  width: 100%;
-  padding-bottom: 10px;
   display: flex;
-  justify-content: space-between;
-  align-items: center
-}
-.icon_down {
-  width: 10px;
-  height: 8px;
-  clip-path: polygon(0 24%, 0 45%, 51% 100%, 100% 44%, 100% 25%, 51% 79%);
-  background: rgb(74, 74, 74);
+  flex-direction: column;
+  gap: 10px;
+  .select {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__icon_down {
+      width: 10px;
+      height: 8px;
+      padding: 2px;
+      clip-path: polygon(0 24%, 0 45%, 51% 100%, 100% 44%, 100% 25%, 51% 79%);
+      background: rgb(74, 74, 74);
+      cursor: pointer;
+    }
+    &__content {
+      font-size: 13px;
+    }
+  }
+  .tree {
+    max-height: 250px;
+    overflow-x: auto;
+    li {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
 }
 </style>
